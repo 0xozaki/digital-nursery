@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Product Details - Digital Nursery{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card mb-4 p-4" style="border-radius:24px;">
+      <div class="row g-4 align-items-center">
+        <div class="col-md-5 text-center">
+          <img src="{{ product.image }}" alt="{{ product.name }}" class="img-fluid" style="max-height:320px;border-radius:18px;">
+        </div>
+        <div class="col-md-7">
+          <h2 style="color:#388e3c;font-weight:700;">{{ product.name }}</h2>
+          <h5 class="mb-3" style="color:#ff8300;font-weight:600;">${{ product.price }}</h5>
+          <p>{{ product.description }}</p>
+          <div class="mb-3"><strong>Care Tips:</strong> {{ product.care }}</div>
+          <form method="POST" action="{{ url_for('main.add_to_cart', product_id=product.id) }}">
+            <button type="submit" class="btn btn-talabat" style="background:#388e3c;">Add to Cart</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

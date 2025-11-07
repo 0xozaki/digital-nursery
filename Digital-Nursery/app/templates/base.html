@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Online Store{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        /* Hide and blur content when loading overlay is visible */
+        /* App-like shadow/dim effect when loading */
+        body.loading::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.18);
+            box-shadow: 0 0 64px 32px rgba(56,142,60,0.10);
+            z-index: 2999;
+            pointer-events: none;
+            transition: background 0.3s;
+        }
+        body.loading #loadingOverlay {
+            opacity: 1 !important;
+            display: flex !important;
+        }
+    /* Pull-to-refresh indicator styles */
+    #pullToRefreshIndicator {
+        position: fixed;
+        top: 0;
+        left: 50%;
+        transform: translate(-50%, -120%);
+        z-index: 4000;
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255,255,255,0.95);
+        border-radius: 50%;
+        box-shadow: 0 2px 12px 0 rgba(56,142,60,0.10);
+        transition: transform 0.25s cubic-bezier(.4,2,.6,1), opacity 0.18s;
+        opacity: 0;
+        pointer-events: none;
+    }
+    #pullToRefreshIndicator.active {
+        opacity: 1;
+    }
+    #pullToRefreshIndicator svg {
+        width: 32px;
+        height: 32px;
+        stroke: #388e3c;
+        stroke-width: 2.5;
+        fill: none;
+        transition: transform 0.18s;
+    }
+        body { background:white }
+        .card { border-radius: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .category-icon { width: 110px; height: 110px; border-radius: 24px; background: #e8f5e9; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 8px; box-shadow: 0 2px 12px rgba(56,142,60,0.08); transition: box-shadow 0.2s, transform 0.2s; cursor:pointer; }
+        .category-beautiful:hover { box-shadow: 0 4px 24px rgba(56,142,60,0.18); transform: translateY(-4px) scale(1.05); background: #c8e6c9; }
+        #loadingOverlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(255,255,255,0.95);
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s;
+        }
+        @keyframes plantGrow {
+            0% { transform: scale(0.92) translateY(8px); opacity: 0.7; }
+            100% { transform: scale(1.08) translateY(-4px); opacity: 1; }
+        }
+        .app-footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100vw;
+            background: rgba(255,255,255,0.85);
+            border-top: 1.5px solid #e0e0e0;
+            box-shadow: 0 -4px 24px 0 rgba(56,142,60,0.10), 0 1.5px 0 0 #e0e0e0;
+            z-index: 2000;
+            backdrop-filter: blur(16px) saturate(180%);
+            border-radius: 14px 14px 0 0;
+            margin: 0 auto;
+            max-width: 420px;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: background 0.3s, box-shadow 0.3s;
+            padding-bottom: 0.1rem;
+        }
+        .app-footer .footer-nav {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0.28rem 0 0.08rem 0;
+        }
+        .app-footer .footer-btn {
+            text-decoration: none !important;
+            background: none;
+            border: none;
+            outline: none;
+            color: #034b06;
+            font-size: 0.97rem;
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            transition: color 0.22s cubic-bezier(.4,2,.6,1), background 0.22s, box-shadow 0.22s;
+            border-radius: 9px;
+            padding: 0.12rem 0.45rem 0.06rem 0.45rem;
+            box-shadow: none;
+        }
+        .app-footer .footer-btn.active,
+        .app-footer .footer-btn:focus {
+            color: #034b06;
+            background: rgba(56,142,60,0.08);
+            box-shadow: 0 2px 8px rgba(56,142,60,0.10);
+        }
+        .app-footer .footer-btn svg {
+            width: 19px;
+            height: 19px;
+            margin-bottom: 1px;
+            transition: transform 0.22s cubic-bezier(.4,2,.6,1), color 0.22s;
+        }
+        .app-footer .footer-btn.active svg {
+            transform: scale(1.11);
+            color: #034b06;
+        }
+        @media (min-width: 768px) {
+            .app-footer { display: none; }
+        }
+        </style>
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <div id="pullToRefreshIndicator">
+        <svg width="54" height="54" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg" style="animation: plantGrow 1.2s infinite alternate cubic-bezier(.4,2,.6,1);">
+            <ellipse cx="27" cy="44" rx="14" ry="5" fill="#c8e6c9"/>
+            <path d="M27 44 Q27 30 20 24 Q13 18 27 10 Q41 18 34 24 Q27 30 27 44Z" fill="#388e3c"/>
+            <circle cx="27" cy="18" r="3.5" fill="#fffde4"/>
+        </svg>
+    </div>
+        <div id="loadingOverlay">
+            <div style="display:flex;flex-direction:column;align-items:center;">
+                <svg width="54" height="54" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg" style="animation: plantGrow 1.2s infinite alternate cubic-bezier(.4,2,.6,1);">
+                    <ellipse cx="27" cy="44" rx="14" ry="5" fill="#c8e6c9"/>
+                    <path d="M27 44 Q27 30 20 24 Q13 18 27 10 Q41 18 34 24 Q27 30 27 44Z" fill="#388e3c"/>
+                    <circle cx="27" cy="18" r="3.5" fill="#fffde4"/>
+                </svg>
+                <div style="margin-top:10px;color:#388e3c;font-weight:600;letter-spacing:1px;" id="loadingText">... جار التحميل</div>
+            </div>
+        </div>
+    <header class="mb-4 sticky-top" style="background:linear-gradient(90deg,#f2ffe5 60%,#c8e6c9 100%);border-radius:0 0 32px 32px;overflow:hidden;z-index:1020;">
+                    <div class="container py-3 d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" style="margin-right:10px;width:89px">
+                    <span style="color:#034b06;font-size:1.4rem;font-weight:700;letter-spacing:1px;margin-left: 30px;" id="headerTitle">Digital Nursery</span>
+                </div>
+               
+            </div>
+        </header>
+    <div class="container" style="max-width:1200px;">
+        {% block content %}{% endblock %}
+    </div>
+        {% block show_footer %}
+        <footer class="app-footer">
+            <nav class="footer-nav">
+                <a href="{{ url_for('main.home') }}" class="footer-btn{% if request.endpoint == 'main.home' %} active{% endif %}" id="footerHomeBtn" title="Home">
+                    <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 3.25c-.38 0-.74.14-1.02.4l-6.5 6.13A1.75 1.75 0 0 0 4 11.13V19a2.25 2.25 0 0 0 2.25 2.25h2.5c.41 0 .75-.34.75-.75v-4.25c0-.41.34-.75.75-.75h2c.41 0 .75.34.75.75V20.5c0 .41.34.75.75.75h2.5A2.25 2.25 0 0 0 20 19v-7.87c0-.48-.2-.94-.55-1.25l-6.5-6.13a1.75 1.75 0 0 0-1.02-.4z"/></svg>
+                    <span class="footer-text" data-key="home">الرئيسية</span>
+                </a>
+                <a href="{{ url_for('main.user_cart') }}" class="footer-btn{% if request.endpoint == 'main.user_cart' %} active{% endif %}" id="footerHomeBtn" title="Cart">
+                    <svg fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1.003 1.003 0 0 0 20 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+                    </svg>
+                    <span class="footer-text" data-key="cart">السلة</span>
+                </a>
+                <a href="{{ url_for('main.dashboard') }}" class="footer-btn{% if request.endpoint == 'main.dashboard' %} active{% endif %}" id="footerOrdersBtn" title="Orders">
+                    <svg fill="currentColor" viewBox="0 0 24 24"><path d="M7 18a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H7zm0 2h10a4 4 0 0 0 4-4V6a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v10a4 4 0 0 0 4 4z"></path></svg>
+                    <span class="footer-text" data-key="orders">طلباتي</span>
+                </a>
+                <a href="{{ url_for('main.account') }}" class="footer-btn{% if request.endpoint == 'main.account' %} active{% endif %}" id="footerAccountBtn" title="Account">
+                    <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm-7 8a7 7 0 0 1 14 0H5z"></path></svg>
+                    <span class="footer-text" data-key="account">حسابي</span>
+                </a>
+            </nav>
+        </footer>
+            {% endblock %}
+                {% block footer_credit %}{% endblock %}
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+        <script>
+        // جلب اللغة وتطبيقها
+        async function loadLanguage() {
+            try {
+                const response = await fetch('/get_language');
+                const data = await response.json();
+                const language = data.language || 'en';
+                applyLanguage(language);
+            } catch (error) {
+                console.error('Error loading language:', error);
+                applyLanguage('en');
+            }
+        }
+
+        // تطبيق اللغة المحددة
+        function applyLanguage(lang) {
+            const texts = {
+                en: {
+                    home: "Home",
+                    cart: "Cart",
+                    orders: "Orders",
+                    account: "Account",
+                    loading: "Loading...",
+                    title: "Digital Nursery"
+                }
+            };
+
+            const t = texts[lang];
+            
+            if (!t) {
+                console.error('No texts found for language:', lang);
+                return;
+            }
+            
+            // تحديث النصوص
+            document.querySelectorAll('[data-key]').forEach(element => {
+                const key = element.getAttribute('data-key');
+                if (t[key]) {
+                    element.textContent = t[key];
+                }
+            });
+
+            // تحديث عنوان الصفحة
+            document.title = t.title;
+            document.getElementById('headerTitle').textContent = t.title;
+
+            // تحديث اتجاه الصفحة
+            document.body.dir = lang === 'ar';
+            document.body.style.textAlign = lang === 'ar' ? 'left' : 'right';
+            
+            // تحديث نص التحميل
+            document.getElementById('loadingText').textContent = t.loading;
+        }
+
+        // Alerts auto-fade
+        window.addEventListener('DOMContentLoaded', function() {
+            // تحميل اللغة أولاً
+            loadLanguage();
+            
+            var alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                setTimeout(function() {
+                    alert.classList.add('fade');
+                    alert.classList.remove('show');
+                    setTimeout(function() {
+                        alert.remove();
+                    }, 500); // Bootstrap fade transition duration
+                }, 3000);
+            });
+        });
+
+        // Hide loading overlay when page is fully loaded
+        window.addEventListener('load', function() {
+            var overlay = document.getElementById('loadingOverlay');
+            document.body.classList.remove('loading');
+            if (overlay) {
+                overlay.style.opacity = 0;
+                setTimeout(function() { overlay.style.display = 'none'; }, 500);
+            }
+        });
+
+        // Snapchat-style pull-to-refresh for mobile
+        (function() {
+            var startY = null;
+            var threshold = 80; // px to trigger refresh
+            var refreshing = false;
+            var overlay = document.getElementById('loadingOverlay');
+            var indicator = document.getElementById('pullToRefreshIndicator');
+            var maxPull = 120;
+            window.addEventListener('touchstart', function(e) {
+                if (window.scrollY === 0 && e.touches.length === 1) {
+                    startY = e.touches[0].clientY;
+                } else {
+                    startY = null;
+                }
+            });
+            window.addEventListener('touchmove', function(e) {
+                if (startY !== null && !refreshing) {
+                    var deltaY = e.touches[0].clientY - startY;
+                    if (deltaY > 0) {
+                        var pull = Math.min(deltaY, maxPull);
+                        indicator.classList.add('active');
+                        indicator.style.transform = 'translate(-50%, ' + (pull - 120) + 'px)';
+                        indicator.style.opacity = Math.min(1, pull / threshold);
+                        var svg = indicator.querySelector('svg');
+                        if (svg) svg.style.transform = 'scale(' + (0.9 + Math.min(0.4, pull/120)) + ')';
+                    }
+                    if (deltaY > threshold) {
+                        refreshing = true;
+                        indicator.style.transform = 'translate(-50%, 0) scale(1.1)';
+                        indicator.style.opacity = 1;
+                        document.body.classList.add('loading');
+                        if (overlay) {
+                            overlay.style.opacity = 1;
+                            overlay.style.display = 'flex';
+                        }
+                        setTimeout(function() {
+                            window.location.reload();
+                        }, 600);
+                    }
+                }
+            });
+            window.addEventListener('touchend', function() {
+                startY = null;
+                if (!refreshing) {
+                    indicator.classList.remove('active');
+                    indicator.style.transform = 'translate(-50%, -120%)';
+                    indicator.style.opacity = 0;
+                    var svg = indicator.querySelector('svg');
+                    if (svg) svg.style.transform = 'scale(0.9)';
+                }
+                setTimeout(function() { refreshing = false; }, 1000);
+            });
+        })();
+        </script>
+        {% block scripts %}{% endblock %}
+</body>
+</html>

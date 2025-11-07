@@ -1,0 +1,16 @@
+[
+    {
+        "id": 1,
+        "title": "e خاصة على النباتات",
+        "description": "احصل على خصم 20% على جميع النباتات الداخلية",
+        "image_url": "/static/images/ad1.jpg",
+        "button_text": "اطلع الآن"
+    },
+    {
+        "id": 2,
+        "title": "أسمدة بجودة عالية", 
+        "description": "أفضل الأسمدة العضوية لنباتات أكثر صحة",
+        "image_url": "/static/images/ad2.jpg",
+        "button_text": "تسوق الآن"
+    }
+]

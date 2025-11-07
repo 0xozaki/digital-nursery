@@ -1,0 +1,1220 @@
+{% extends 'base.html' %}
+{% block title %}Home - Digital Nursery{% endblock %}
+{% block content %}
+<style>
+.home-container {
+    background: #f8f9fa;
+    min-height: 100vh;
+    padding-bottom: 80px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Location Header */
+.location-header {
+    direction: rtl;
+    background: white;
+    padding: 15px;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.location-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.location-icon {
+    background: #e8f5e9;
+    padding: 8px;
+    border-radius: 10px;
+    color: #034b06;
+}
+
+.location-text {
+    font-weight: 600;
+    color: #034b06;
+    font-size: 16px;
+}
+
+.change-location {
+    color: #034b06;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+/* Location Modal */
+.location-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+}
+
+.location-modal-content {
+    background: white;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 400px;
+    max-height: 80vh;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+}
+
+.location-modal-header {
+    background: linear-gradient(135deg, #034b06 0%, #06700b 100%);
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.location-modal-title {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.location-list {
+    max-height: 60vh;
+    overflow-y: auto;
+    padding: 0;
+}
+
+.location-item {
+    padding: 15px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.location-item:hover {
+    background: #f8f9fa;
+}
+
+.location-item:active {
+    background: #e8f5e9;
+}
+
+.location-item-icon {
+    color: #034b06;
+    font-size: 18px;
+}
+
+.location-item-name {
+    font-size: 16px;
+    color: #333;
+    font-weight: 500;
+}
+
+.location-item.selected {
+    background: #e8f5e9;
+    border-left: 4px solid #034b06;
+}
+
+.location-item.selected .location-item-name {
+    color: #034b06;
+    font-weight: 600;
+}
+
+/* Search Bar */
+.search-section {
+    direction: rtl;
+    background: white;
+    padding: 15px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 0 15px;
+    border: 1px solid #e0e0e0;
+}
+
+.search-icon {
+    color: #666;
+    margin-right: 10px;
+}
+
+.search-input {
+    flex: 1;
+    border: none;
+    background: none;
+    padding: 12px 0;
+    font-size: 16px;
+    outline: none;
+}
+
+.search-input::placeholder {
+    color: #999;
+}
+
+/* Quick Categories Grid */
+.quick-categories {
+    direction: rtl;
+    background: white;
+    padding: 20px 15px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #034b06;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.categories-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+.category-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 8px;
+    border-radius: 12px;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+    border: 1px solid #e8f5e9;
+    cursor: pointer;
+}
+
+.category-item:hover {
+    background: #e8f5e9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(3, 75, 6, 0.1);
+}
+
+.category-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+.category-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: #034b06;
+    text-align: center;
+    line-height: 1.2;
+}
+
+/* Ads Slider Section */
+.ads-slider-section {
+    direction: rtl;
+    background: white;
+    padding: 20px 15px;
+    border-bottom: 1px solid #e0e0e0;
+    position: relative;
+}
+
+.ads-slider-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    height: 160px;
+}
+
+.ads-slider {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    height: 100%;
+}
+
+.ad-slide {
+    flex: 0 0 100%;
+    height: 100%;
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.ad-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ad-content {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+    color: white;
+    padding: 20px;
+    padding-top: 40px;
+}
+
+.ad-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 5px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.ad-description {
+    font-size: 14px;
+    opacity: 0.9;
+    margin-bottom: 10px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.ad-button {
+    background: #034b06;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.ad-button:hover {
+    background: #06700b;
+    transform: translateY(-1px);
+}
+
+.slider-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.slider-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ddd;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.slider-dot.active {
+    background: #034b06;
+    width: 20px;
+    border-radius: 10px;
+}
+
+.slider-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 18px;
+    color: #034b06;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    z-index: 2;
+}
+
+.slider-nav:hover {
+    background: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.slider-prev {
+    right: 25px;
+}
+
+.slider-next {
+    left: 25px;
+}
+
+/* Featured Section */
+.featured-section {
+    background: white;
+    padding: 20px 15px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.featured-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.see-all {
+    color: #034b06;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.featured-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.featured-item {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 15px;
+    border: 1px solid #e8f5e9;
+    transition: all 0.3s ease;
+}
+
+.featured-item:hover {
+    background: #e8f5e9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(3, 75, 6, 0.1);
+}
+
+.item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.item-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #034b06;
+    line-height: 1.2;
+}
+
+.delivery-time {
+    background: #e8f5e9;
+    color: #034b06;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.item-description {
+    color: #666;
+    font-size: 12px;
+    line-height: 1.3;
+    margin-bottom: 8px;
+}
+
+.item-price {
+    font-size: 16px;
+    font-weight: 700;
+    color: #034b06;
+    background: #e8f5e9;
+    padding: 4px 8px;
+    border-radius: 6px;
+    display: inline-block;
+}
+
+/* Promo Banner */
+.promo-banner {
+    background: linear-gradient(135deg, #034b06 0%, #06700b 100%);
+    color: white;
+    padding: 20px 15px;
+    margin: 15px;
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+}
+
+.promo-banner::before {
+    content: '✨';
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 24px;
+    opacity: 0.8;
+}
+
+.promo-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.promo-subtitle {
+    font-size: 14px;
+    opacity: 0.9;
+    margin-bottom: 15px;
+}
+
+.try-now-btn {
+    background: white;
+    color: #034b06;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(255, 255, 255, 0.3);
+}
+
+.try-now-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.4);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .categories-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+    }
+    
+    .featured-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .category-item {
+        padding: 10px 5px;
+    }
+    
+    .category-icon {
+        width: 35px;
+        height: 35px;
+        font-size: 18px;
+    }
+    
+    .category-name {
+        font-size: 11px;
+    }
+    
+    .ads-slider-container {
+        height: 140px;
+    }
+    
+    .ad-title {
+        font-size: 16px;
+    }
+    
+    .ad-description {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .categories-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .ads-slider-container {
+        height: 120px;
+    }
+    
+    .ad-content {
+        padding: 15px;
+        padding-top: 30px;
+    }
+    
+    .ad-title {
+        font-size: 14px;
+    }
+    
+    .ad-description {
+        font-size: 11px;
+    }
+}
+</style>
+
+<div class="home-container">
+    <!-- Location Header -->
+    <div class="location-header">
+        <div class="location-info">
+            <div class="location-icon">📍</div>
+            <div class="location-text" id="currentLocation">توصيل الى {{location}}</div>
+        </div>
+        <div class="change-location" id="changeLocation">تغيير</div>
+    </div>
+
+    <!-- Location Modal -->
+    <div class="location-modal" id="locationModal">
+        <div class="location-modal-content">
+            <div class="location-modal-header">
+                <div class="location-modal-title" data-key="chooseGovernorate">📍 اختر ولايتك</div>
+                <button class="close-modal" id="closeModal">×</button>
+            </div>
+            <div class="location-list" id="locationList">
+                <!-- الولايات سيتم إضافتها بواسطة JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-section" onclick="redirectToSearchPage()">
+        <div class="search-container">
+            <div class="search-icon">🔍</div>
+            <input type="text" class="search-input" placeholder="ابدا البحث" id="searchInput" data-key="searchPlaceholder">
+        </div>
+    </div>
+
+    <!-- Sub Categories -->
+    <div class="quick-categories">
+        <div class="section-title">
+            <span>🏷️</span>
+            <span data-key="categories">التصنيفات</span>
+        </div>
+        <div class="categories-grid" id="categoriesGrid">
+            <!-- سيتم تعبئتها بواسطة JavaScript -->
+        </div>
+    </div>
+
+    <!-- Ads Slider -->
+    <div class="ads-slider-section">
+        <div class="ads-slider-container">
+            <div class="ads-slider" id="adsSlider">
+                <!-- سيتم تعبئتها بواسطة JavaScript -->
+            </div>
+            
+            <!-- Navigation Buttons -->
+            <button class="slider-nav slider-prev" onclick="prevSlide()">❮</button>
+            <button class="slider-nav slider-next" onclick="nextSlide()">❯</button>
+        </div>
+        <div class="slider-controls" id="sliderDots">
+            <!-- سيتم تعبئتها بواسطة JavaScript -->
+        </div>
+    </div>
+
+    
+
+    
+</div>
+
+<script>
+// جلب اللغة وتطبيقها
+async function loadLanguage() {
+    try {
+        const response = await fetch('/get_language');
+        const data = await response.json();
+        const language = data.language || 'en';
+        applyLanguage(language);
+    } catch (error) {
+        console.error('Error loading language:', error);
+        applyLanguage('en');
+    }
+}
+
+// تطبيق اللغة المحددة
+function applyLanguage(lang) {
+    const texts = {
+        en: {
+            chooseGovernorate: "📍 Choose Your Governorate",
+            searchPlaceholder: "Search for Flowers",
+            categories: "Categories",
+            talabatMart: "talabat mart",
+            groceries: "Groceries",
+            pharmacies: "Pharmacies",
+            flowers: "Flowers",
+            pickup: "Pickup",
+            giveBack: "Give Back",
+            express: "Express",
+            featured: "Featured",
+            mealsForOne: "Meals for one",
+            seeAll: "See all",
+            smartBox: "Smart Box",
+            deliveryTime27: "27 mins",
+            smartBoxDesc: "Delicious meal package for one person",
+            smartBoxPrice: "2.5 OMR + Free delivery",
+            megaSpicy: "Mega Spicy Meal",
+            deliveryTime25: "25 mins",
+            megaSpicyDesc: "Spicy chicken meal with fries",
+            megaSpicyPrice: "0.45 OMR",
+            twoShawerma: "Two Sarokh Chicken Shawerma",
+            deliveryTime30: "30 mins",
+            twoShawermaDesc: "Double chicken shawerma wrap",
+            twoShawermaPrice: "0.39 OMR",
+            healthySalad: "Healthy Salad Box",
+            deliveryTime20: "20 mins",
+            healthySaladDesc: "Fresh vegetables with dressing",
+            healthySaladPrice: "1.8 OMR",
+            promoTitle: "Not seeing your favorites?",
+            promoSubtitle: "We're working to bring them back soon.",
+            notifyMe: "Notify Me",
+            popularNow: "Popular Now",
+            trending: "Trending",
+            topRated: "Top Rated",
+            fastDelivery: "Fast Delivery",
+            specialOffers: "Special Offers",
+            changeLocation: "Change",
+            locationUpdated: "✅ Location updated successfully",
+            locationError: "❌ Error updating location",
+            connectionError: "❌ Connection error",
+            notified: "Notified!"
+        },
+        ar: {
+            chooseGovernorate: "📍 اختر ولايتك",
+            searchPlaceholder: "ابحث عن الزهور",
+            categories: "التصنيفات",
+            talabatMart: "طلبات مارت",
+            groceries: "البقالة",
+            pharmacies: "الصيدليات",
+            flowers: "الزهور",
+            pickup: "الاستلام",
+            giveBack: "رد الجميل",
+            express: "إكسبرس",
+            featured: "مميز",
+            mealsForOne: "وجبات فردية",
+            seeAll: "عرض الكل",
+            smartBox: "الصندوق الذكي",
+            deliveryTime27: "27 دقيقة",
+            smartBoxDesc: "وجبة لذيذة مخصصة لشخص واحد",
+            smartBoxPrice: "2.5 ريال + توصيل مجاني",
+            megaSpicy: "الوجبة الحارة الكبيرة",
+            deliveryTime25: "25 دقيقة",
+            megaSpicyDesc: "وجبة دجاج حارة مع بطاطس",
+            megaSpicyPrice: "0.45 ريال",
+            twoShawerma: "شاورما دجاج مزدوجة",
+            deliveryTime30: "30 دقيقة",
+            twoShawermaDesc: "لفافة شاورما دجاج مزدوجة",
+            twoShawermaPrice: "0.39 ريال",
+            healthySalad: "صندوق السلطة الصحية",
+            deliveryTime20: "20 دقيقة",
+            healthySaladDesc: "خضروات طازجة مع صلصة",
+            healthySaladPrice: "1.8 ريال",
+            promoTitle: "لا ترى مفضلاتك؟",
+            promoSubtitle: "نعمل على إعادتها قريباً.",
+            notifyMe: "أخطرني",
+            popularNow: "الأكثر شيوعاً",
+            trending: "الرائج",
+            topRated: "الأعلى تقييماً",
+            fastDelivery: "توصيل سريع",
+            specialOffers: "عروض خاصة",
+            changeLocation: "تغيير",
+            locationUpdated: "✅ تم تحديث الموقع بنجاح",
+            locationError: "❌ حدث خطأ في تحديث الموقع",
+            connectionError: "❌ حدث خطأ في الاتصال",
+            notified: "تم الإشعار!"
+        }
+    };
+
+    const t = texts[lang];
+    
+    if (!t) {
+        console.error('No texts found for language:', lang);
+        return;
+    }
+    
+    // تحديث النصوص
+    document.querySelectorAll('[data-key]').forEach(element => {
+        const key = element.getAttribute('data-key');
+        if (t[key]) {
+            if (element.tagName === 'INPUT') {
+                element.placeholder = t[key];
+            } else {
+                element.textContent = t[key];
+            }
+        }
+    });
+
+    // تحديث اتجاه الصفحة
+    document.body.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    document.body.style.textAlign = lang === 'ar' ? 'right' : 'left';
+    
+    // تحديث عنوان الصفحة
+    document.title = lang === 'ar' ? "الصفحة الرئيسية - المشتل الرقمي" : "Home - Digital Nursery";
+    
+    // تحديث نص زر تغيير الموقع
+    document.getElementById('changeLocation').textContent = t.changeLocation;
+}
+
+// جلب التصنيفات وعرضها
+async function loadCategories() {
+    try {
+        const response = await fetch('/api/categories');
+        const categories = await response.json();
+        displayCategories(categories);
+    } catch (error) {
+        console.error('Error loading categories:', error);
+        displayDefaultCategories();
+    }
+}
+
+// عرض التصنيفات في الشبكة
+function displayCategories(categories) {
+    const grid = document.getElementById('categoriesGrid');
+    grid.innerHTML = '';
+
+    categories.forEach(category => {
+        const categoryItem = document.createElement('div');
+        categoryItem.className = 'category-item';
+        categoryItem.onclick = () => openCategoryPage(category.id);
+        
+        const iconUrl = category.icon || getDefaultIcon(category.id);
+        
+        categoryItem.innerHTML = `
+            <div class="category-icon" style="background: ${getCategoryColor(category.id)};">
+                <img src="${iconUrl}" alt="${category.name_en}" style="width: 24px; height: 24px; border-radius: 6px;">
+            </div>
+            <div class="category-name">
+                ${document.body.dir === 'rtl' ? category.name_ar : category.name_ar}
+            </div>
+        `;
+        
+        grid.appendChild(categoryItem);
+    });
+}
+
+// الانتقال لصفحة التصنيف
+function openCategoryPage(categoryId) {
+    window.location.href = `/category/${categoryId}`;
+}
+
+// أيقونات افتراضية
+function getDefaultIcon(categoryId) {
+    const icons = {
+        1: '🏠', 2: '🌳', 3: '🧪', 4: '🪴', 
+        5: '🌱', 6: '🌾', 7: '🛠️', 8: '🌵',
+        9: '💧', 10: '🌸', 11: '🌲', 12: '🌿'
+    };
+    return `data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">${icons[categoryId] || '🌱'}</text></svg>`;
+}
+
+// ألوان افتراضية للخلفيات
+function getCategoryColor(categoryId) {
+    const colors = ['#e8f5e9', '#fff8e1', '#e3f2fd', '#fce4ec', '#e8f5e9', '#fff8e1', '#e3f2fd', '#fce4ec'];
+    return colors[categoryId % colors.length];
+}
+
+// تصنيفات افتراضية في حالة الخطأ
+function displayDefaultCategories() {
+    const defaultCategories = [
+        {id: 1, name_en: "Indoor Plants", name_ar: "نباتات داخلية", icon: "🏠"},
+        {id: 2, name_en: "Outdoor Plants", name_ar: "نباتات خارجية", icon: "🌳"},
+        {id: 3, name_en: "Fertilizers", name_ar: "أسمدة", icon: "🧪"},
+        {id: 4, name_en: "Pots", name_ar: "أصص", icon: "🪴"}
+    ];
+    displayCategories(defaultCategories);
+}
+
+// جلب وعرض الإعلانات
+async function loadAds() {
+    try {
+        const response = await fetch('/api/ads');
+        const ads = await response.json();
+        displayAds(ads);
+    } catch (error) {
+        console.error('Error loading ads:', error);
+        displayDefaultAds();
+    }
+}
+
+// عرض الإعلانات في السلايدر
+function displayAds(ads) {
+    const slider = document.getElementById('adsSlider');
+    const dotsContainer = document.getElementById('sliderDots');
+    
+    slider.innerHTML = '';
+    dotsContainer.innerHTML = '';
+    
+    if (ads.length === 0) {
+        displayDefaultAds();
+        return;
+    }
+    
+    ads.forEach((ad, index) => {
+        // إنشاء شريحة الإعلان
+        const slide = document.createElement('div');
+        slide.className = 'ad-slide';
+        slide.innerHTML = `
+            <img src="${ad.image_url}" alt="${ad.title}" class="ad-image" onerror="this.src='data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 160\" fill=\"%23034b06\"><rect width=\"400\" height=\"160\" fill=\"%23e8f5e9\"/><text x=\"50%\" y=\"50%\" font-family=\"Arial\" font-size=\"18\" text-anchor=\"middle\" dy=\".3em\" fill=\"%23034b06\">${ad.title}</text></svg>'">
+            <div class="ad-content">
+                <div class="ad-title">${ad.title}</div>
+                <div class="ad-description">${ad.description}</div>
+                ${ad.button_text ? `<button class="ad-button" onclick="handleAdClick(${ad.id})">${ad.button_text}</button>` : ''}
+            </div>
+        `;
+        slider.appendChild(slide);
+        
+        // إنشاء نقاط التنقل
+        const dot = document.createElement('div');
+        dot.className = `slider-dot ${index === 0 ? 'active' : ''}`;
+        dot.onclick = () => goToSlide(index);
+        dotsContainer.appendChild(dot);
+    });
+    
+    currentSlide = 0;
+    totalSlides = ads.length;
+    startAutoSlide();
+}
+
+// الإعلانات الافتراضية في حالة عدم وجود إعلانات
+function displayDefaultAds() {
+    const defaultAds = [
+        {
+            id: 1,
+            title: "عروض خاصة على النباتات",
+            description: "احصل على خصم 20% على جميع النباتات الداخلية",
+            image_url: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 160' fill='%23034b06'><rect width='400' height='160' fill='%23e8f5e9'/><text x='50%' y='50%' font-family='Arial' font-size='18' text-anchor='middle' dy='.3em' fill='%23034b06'>عروض نباتات</text></svg>",
+            button_text: "اطلع الآن"
+        },
+        {
+            id: 2,
+            title: "أسمدة بجودة عالية",
+            description: "أفضل الأسمدة العضوية لنباتات أكثر صحة",
+            image_url: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 160' fill='%2306700b'><rect width='400' height='160' fill='%23c8e6c9'/><text x='50%' y='50%' font-family='Arial' font-size='18' text-anchor='middle' dy='.3em' fill='%2306700b'>أسمدة عضوية</text></svg>",
+            button_text: "تسوق الآن"
+        },
+        {
+            id: 3,
+            title: "أصص زراعية متنوعة",
+            description: "تشكيلة واسعة من الأصص بأسعار منافسة",
+            image_url: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 160' fill='%23034b06'><rect width='400' height='160' fill='%23a5d6a7'/><text x='50%' y='50%' font-family='Arial' font-size='18' text-anchor='middle' dy='.3em' fill='%23034b06'>أصص زراعية</text></svg>",
+            button_text: "اكتشف المزيد"
+        }
+    ];
+    displayAds(defaultAds);
+}
+
+// متغيرات التحكم بالسلايدر
+let currentSlide = 0;
+let totalSlides = 0;
+let autoSlideInterval;
+
+// الانتقال لشريحة محددة
+function goToSlide(slideIndex) {
+    const slider = document.getElementById('adsSlider');
+    const dots = document.querySelectorAll('.slider-dot');
+    
+    currentSlide = slideIndex;
+    slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+    
+    // تحديث النقاط النشطة
+    dots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === currentSlide);
+    });
+}
+
+// الشريحة التالية
+function nextSlide() {
+    currentSlide = (currentSlide + 1) % totalSlides;
+    goToSlide(currentSlide);
+    resetAutoSlide();
+}
+
+// الشريحة السابقة
+function prevSlide() {
+    currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+    goToSlide(currentSlide);
+    resetAutoSlide();
+}
+
+// بدء التمرير التلقائي
+function startAutoSlide() {
+    if (totalSlides > 1) {
+        autoSlideInterval = setInterval(nextSlide, 5000);
+    }
+}
+
+// إعادة تعيين التمرير التلقائي
+function resetAutoSlide() {
+    clearInterval(autoSlideInterval);
+    startAutoSlide();
+}
+
+// التعامل مع نقرات الإعلانات
+function handleAdClick(adId) {
+    // هنا يمكنك إضافة منطق تتبع النقرات أو التوجيه
+    console.log(`Ad ${adId} clicked`);
+    // مثال: window.location.href = `/ad/${adId}`;
+}
+
+// قائمة ولايات سلطنة عمان من الشمال إلى الجنوب
+const omanGovernorates = [
+    "مسقط", "محافظة مسقط",
+    "شمال الباطنة", "محافظة شمال الباطنة", 
+    "جنوب الباطنة", "محافظة جنوب الباطنة",
+    "الظاهرة", "محافظة الظاهرة",
+    "الداخلية", "محافظة الداخلية",
+    "الوسطى", "محافظة الوسطى",
+    "جنوب الشرقية", "محافظة جنوب الشرقية",
+    "شمال الشرقية", "محافظة شمال الشرقية",
+    "البريمي", "محافظة البريمي",
+    "مسندم", "محافظة مسندم",
+    "ظفار", "محافظة ظفار",
+    "ولاية السيب",
+    "ولاية بوشر",
+    "ولاية مطرح",
+    "ولاية العامرات",
+    "ولاية قريات",
+    "ولاية صحم",
+    "ولاية الخابورة",
+    "ولاية السويق",
+    "ولاية لوى",
+    "ولاية صحار",
+    "ولاية الرستاق",
+    "ولاية العوابي",
+    "ولاية نخل",
+    "ولاية وادي المعاول",
+    "ولاية بركاء",
+    "ولاية المصنعة",
+    "ولاية بدبد",
+    "ولاية ازكي",
+    "ولاية منح",
+    "ولاية الحمراء",
+    "ولاية بهلا",
+    "ولاية نزوى",
+    "ولاية Adam",
+    "ولاية Haima",
+    "ولاية الدقم",
+    "ولاية جعلان بني بو حسن",
+    "ولاية جعلان بني بو علي",
+    "ولاية الكامل والوافي",
+    "ولاية صور",
+    "ولاية بدية",
+    "ولاية إبراء",
+    "ولاية المضيبي",
+    "ولاية قلهات",
+    "ولاية وادي بني خالد",
+    "ولاية خصب",
+    "ولاية دبا",
+    "ولاية بخا",
+    "ولاية مدحاء",
+    "ولاية صلالة",
+    "ولاية طاقة",
+    "ولاية مرباط",
+    "ولاية سدح",
+    "ولاية رخيوت",
+    "ولاية ضلكوت",
+    "ولاية مقشن",
+    "ولاية شليم وجزر الحلانيات"
+];
+
+// العناصر الأساسية
+const changeLocationBtn = document.getElementById('changeLocation');
+const locationModal = document.getElementById('locationModal');
+const closeModalBtn = document.getElementById('closeModal');
+const locationList = document.getElementById('locationList');
+const currentLocationText = document.getElementById('currentLocation');
+
+// تهيئة قائمة الولايات
+function initializeLocationList() {
+    locationList.innerHTML = '';
+    
+    omanGovernorates.forEach(gov => {
+        const locationItem = document.createElement('div');
+        locationItem.className = 'location-item';
+        locationItem.innerHTML = `
+            <div class="location-item-icon">📍</div>
+            <div class="location-item-name">${gov}</div>
+        `;
+        
+        locationItem.addEventListener('click', () => {
+            selectLocation(gov);
+        });
+        
+        locationList.appendChild(locationItem);
+    });
+}
+
+// اختيار ولاية
+async function selectLocation(location) {
+    const lang = document.body.dir === 'rtl' ? 'ar' : 'en';
+    const deliverText = lang === 'ar' ? 'توصيل إلى ' : 'Deliver to ';
+    currentLocationText.textContent = deliverText + location;
+    
+    locationModal.style.display = 'none';
+    
+    try {
+        const formData = new FormData();
+        formData.append('location', location);
+        
+        const response = await fetch('/update_profile', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+            showNotification(getText('locationUpdated'), 'success');
+        } else {
+            showNotification(getText('locationError'), 'error');
+        }
+    } catch (error) {
+        console.error('Error updating location:', error);
+        showNotification(getText('connectionError'), 'error');
+    }
+}
+
+// الحصول على النص بناءً على اللغة
+function getText(key) {
+    const lang = document.body.dir === 'rtl' ? 'ar' : 'en';
+    const texts = {
+        en: {
+            locationUpdated: "✅ Location updated successfully",
+            locationError: "❌ Error updating location",
+            connectionError: "❌ Connection error",
+            notified: "Notified!"
+        },
+        ar: {
+            locationUpdated: "✅ تم تحديث الموقع بنجاح",
+            locationError: "❌ حدث خطأ في تحديث الموقع",
+            connectionError: "❌ حدث خطأ في الاتصال",
+            notified: "تم الإشعار!"
+        }
+    };
+    return texts[lang][key] || key;
+}
+
+// إظهار إشعار
+function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'success' ? '#4caf50' : '#f44336'};
+        color: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 10001;
+        animation: slideIn 0.3s ease;
+    `;
+    
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 300);
+    }, 3000);
+}
+
+// أحداث النقر
+changeLocationBtn.addEventListener('click', () => {
+    locationModal.style.display = 'flex';
+    initializeLocationList();
+});
+
+closeModalBtn.addEventListener('click', () => {
+    locationModal.style.display = 'none';
+});
+
+locationModal.addEventListener('click', (e) => {
+    if (e.target === locationModal) {
+        locationModal.style.display = 'none';
+    }
+});
+
+// إضافة أنيميشن للإشعارات
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+    }
+`;
+document.head.appendChild(style);
+
+// Add interactive effects
+document.addEventListener('DOMContentLoaded', function() {
+    loadLanguage().then(() => {
+        loadCategories();
+        loadAds(); // تحميل الإعلانات
+    });
+    
+    const categoryItems = document.querySelectorAll('.category-item');
+    categoryItems.forEach(item => {
+        item.addEventListener('click', function() {
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = '';
+            }, 150);
+        });
+    });
+
+    const featuredItems = document.querySelectorAll('.featured-item');
+    featuredItems.forEach(item => {
+        item.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-2px)';
+        });
+        item.addEventListener('mouseleave', function() {
+            this.style.transform = '';
+        });
+    });
+
+    const searchInput = document.querySelector('.search-input');
+    searchInput.addEventListener('focus', function() {
+        this.parentElement.style.boxShadow = '0 0 0 2px rgba(3, 75, 6, 0.2)';
+    });
+    
+    searchInput.addEventListener('blur', function() {
+        this.parentElement.style.boxShadow = 'none';
+    });
+});
+
+// Try now button functionality
+document.getElementById('notifyBtn').addEventListener('click', function() {
+    this.textContent = getText('notified');
+    this.style.background = '#4caf50';
+    this.style.color = 'white';
+    
+    setTimeout(() => {
+        const lang = document.body.dir === 'rtl' ? 'ar' : 'en';
+        this.textContent = lang === 'ar' ? 'أخطرني' : 'Notify Me';
+        this.style.background = 'white';
+        this.style.color = '#034b06';
+    }, 2000);
+});
+
+function redirectToSearchPage() {
+    window.location.href = "/companies";
+}
+</script>
+{% endblock %}

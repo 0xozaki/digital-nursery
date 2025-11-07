@@ -1,0 +1,32 @@
+{
+  "ozaki": {
+    "created_at": "2025-11-07T01:01:13.954278",
+    "updated_at": "2025-11-07T14:06:30.816427",
+    "items": [
+      {
+        "product_name": "Ceramic Pot",
+        "price": 1.2,
+        "quantity": 1,
+        "currency": "OMR",
+        "added_at": "2025-11-07T14:06:30.816371",
+        "item_id": "item_20251107140630816383"
+      }
+    ],
+    "total": 1.2
+  },
+  "null": {
+    "created_at": "2025-11-07T01:04:41.299290",
+    "updated_at": "2025-11-07T01:04:41.299398",
+    "items": [
+      {
+        "product_name": "Premium Plant Bundle",
+        "price": 25.99,
+        "quantity": 1,
+        "currency": "OMR",
+        "added_at": "2025-11-07T01:04:41.299309",
+        "item_id": "item_20251107010441299312"
+      }
+    ],
+    "total": 25.99
+  }
+}

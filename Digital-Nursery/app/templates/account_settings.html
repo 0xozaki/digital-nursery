@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block head %}
+<style>
+  header { display: none !important; }
+</style>
+{% endblock %}
+{% block title %}Account Settings{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <div class="d-flex align-items-center" style="gap:14px;">
+      {% if user.image %}
+        <img src="{{ user.image }}" alt="Profile Image" style="width:44px;height:44px;border-radius:50%;object-fit:cover;box-shadow:0 2px 8px rgba(56,142,60,0.10);">
+      {% else %}
+        <div style="width:44px;height:44px;border-radius:50%;background:#e8f5e9;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:#388e3c;">👤</div>
+      {% endif %}
+      <div>
+        <div style="font-size:1.15rem;font-weight:700;color:#388e3c;">{{ user.username }}</div>
+        <div style="font-size:0.97rem;color:#388e3c99;">{{ user.phone_number }}</div>
+      </div>
+    </div>
+  <a href="{{ url_for('main.settings') }}" title="Settings" style="color:#388e3c;display:flex;align-items:center;justify-content:center;padding:6px 8px;border-radius:8px;transition:background 0.2s;">
+      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 8 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 5 15.4a1.65 1.65 0 0 0-1.51-1V13a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09A1.65 1.65 0 0 0 16 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.14.31.22.65.22 1v.09A1.65 1.65 0 0 0 21 12c0 .35-.08.69-.22 1v.09A1.65 1.65 0 0 0 19.4 15z"/></svg>
+    </a>
+  </div>
+  <hr style="border:0;border-top:2.5px solid #bdbdbd;margin:0 0 22px 0;box-shadow:0 4px 16px 0 rgba(56,142,60,0.18);">
+
+  <div class="list-group" style="max-width:420px;margin:auto;background:#ffffff">
+    <a href="{{ url_for('main.dashboard') }}" class="list-group-item list-group-item-action d-flex align-items-center account-menu-btn" style="gap:14px;font-size:1.08rem;background:#ffffff;border:none;">
+      <svg width="22" height="22" fill="none" stroke="#388e3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg>
+      طلباتي
+    </a>
+    <a href="#" class="list-group-item list-group-item-action d-flex align-items-center account-menu-btn" style="gap:14px;font-size:1.08rem;background:#ffffff;border:none;">
+      <svg width="22" height="22" fill="none" stroke="#388e3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M17 17a5 5 0 0 1-10 0c0-2.5 5-9 5-9s5 6.5 5 9z"/><circle cx="12" cy="17" r="1.5"/></svg>
+      قسائم
+    </a>
+    <a href="#" class="list-group-item list-group-item-action d-flex align-items-center account-menu-btn" style="gap:14px;font-size:1.08rem;background:#ffffff;border:none;">
+      <svg width="22" height="22" fill="none" stroke="#388e3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="10" rx="2"/><path d="M7 7v10M17 7v10M9 11h6"/></svg>
+      تقييم
+    </a>
+    <a href="#" class="list-group-item list-group-item-action d-flex align-items-center account-menu-btn" style="gap:14px;font-size:1.08rem;background:#ffffff;border:none;">
+      <svg width="22" height="22" fill="none" stroke="#388e3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 1 1 5.82 0c0 1.5-1.5 2.25-2.91 2.25v1.5"/><circle cx="12" cy="17" r=".5"/></svg>
+      المساعدة
+    </a>
+    <a href="#" class="list-group-item list-group-item-action d-flex align-items-center account-menu-btn" style="gap:14px;font-size:1.08rem;background:#ffffff;border:none;">
+      <svg width="22" height="22" fill="none" stroke="#388e3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      حول التطبيق
+    </a>
+    <style>
+    .account-menu-btn:hover, .account-menu-btn:focus {
+      background: white ;
+      color: #388e3c;
+    }
+    </style>
+  </div>
+</div>
+{% endblock %}

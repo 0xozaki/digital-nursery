@@ -1,0 +1,52 @@
+[
+  {
+    "user_id": "98036863959",
+    "phone_number": null,
+    "token": "null",
+    "password_hach": "None@2412007",
+    "username": "ozaki",
+    "location": "مسقط",
+    "image": "https://randomuser.me/api/portraits/men/1.jpg",
+    "bio": null,
+    "role": "user",
+    "language": "ar",
+    "orders": [
+      {
+        "from": "Store A",
+        "time": "2025-09-18 10:00",
+        "price": "25.00",
+        "details": "Fiddle Leaf Fig, Ceramic Pot"
+      },
+      {
+        "from": "Store qB",
+        "time": "2025-09-17 15:30",
+        "price": "8.99",
+        "details": "Sunflower Seeds"
+      },
+      {
+        "from": "Store B",
+        "time": "2025-09-17 15:30",
+        "price": "8.99",
+        "details": "Sunflower Seeds"
+      },
+      {
+        "from": "Store A",
+        "time": "2025-09-18 10:00",
+        "price": "25.00",
+        "details": "Fiddle Leaf Fig, Ceramic Pot"
+      },
+      {
+        "from": "Store B",
+        "time": "2025-09-17 15:30",
+        "price": "8.99",
+        "details": "Sunflower Seeds"
+      },
+      {
+        "from": "Store B",
+        "time": "2025-09-17 15:30",
+        "price": "8.99",
+        "details": "Sunflower Seeds"
+      }
+    ]
+  }
+]

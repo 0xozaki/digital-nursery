@@ -1,0 +1,978 @@
+{% extends 'base.html' %}
+{% block title %}My Cart - Online Store{% endblock %}
+{% block content %}
+<style>
+.cart-container {
+    background: #f8f9fa;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    padding-bottom: 120px;
+}
+
+/* Header with Back Button - GREEN */
+.cart-header {
+    background: #034b06;
+    color: white;
+    padding: 12px 15px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 15px rgba(3, 75, 6, 0.2);
+    display: flex;
+    border-radius: 9px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.back-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px;
+    transition: transform 0.3s ease;
+}
+
+.back-button:hover {
+    transform: scale(1.1);
+}
+
+.cart-title {
+    font-weight: 700;
+    font-size: 16px;
+    text-align: center;
+    flex: 1;
+}
+
+/* Empty Cart State */
+.empty-cart {
+    text-align: center;
+    padding: 50px 20px;
+    background: white;
+    margin: 15px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(3, 75, 6, 0.1);
+}
+
+.empty-cart-icon {
+    font-size: 70px;
+    margin-bottom: 15px;
+    opacity: 0.7;
+}
+
+.empty-cart-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #034b06;
+    margin-bottom: 8px;
+}
+
+.empty-cart-message {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 25px;
+}
+
+.continue-shopping-btn {
+    background: #034b06;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(3, 75, 6, 0.3);
+}
+
+.continue-shopping-btn:hover {
+    background: #06700b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(3, 75, 6, 0.4);
+}
+
+/* Cart Items Section */
+.cart-items-section {
+    background: white;
+    margin: 15px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(3, 75, 6, 0.1);
+    overflow: hidden;
+}
+
+.cart-section-header {
+    background: linear-gradient(135deg, #034b06, #06700b);
+    color: white;
+    padding: 12px 15px;
+    font-weight: 600;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Cart Item Card */
+.cart-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    border-bottom: 1px solid #f0f0f0;
+    transition: all 0.3s ease;
+}
+
+.cart-item:hover {
+    background: #f8fff6;
+}
+
+.cart-item:last-child {
+    border-bottom: none;
+}
+
+.cart-item-image {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    object-fit: cover;
+    background: #f8f9fa;
+    border: 2px solid #e8f5e9;
+    flex-shrink: 0;
+}
+
+.cart-item-info {
+    flex: 1;
+    margin: 0 12px;
+}
+
+.cart-item-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #034b06;
+    margin-bottom: 4px;
+}
+
+.cart-item-price {
+    font-size: 14px;
+    font-weight: 600;
+    color: #034b06;
+}
+
+/* Quantity Controls - SMALLER */
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0;
+}
+
+.quantity-btn {
+    background: #034b06;
+    color: white;
+    border: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.quantity-btn:hover {
+    background: #06700b;
+    transform: scale(1.1);
+}
+
+.quantity-display {
+    font-size: 14px;
+    font-weight: 600;
+    color: #034b06;
+    min-width: 25px;
+    text-align: center;
+}
+
+.remove-btn {
+    background: none;
+    border: none;
+    color: #ff4444;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    font-size: 16px;
+}
+
+.remove-btn:hover {
+    background: #ffebee;
+    transform: scale(1.1);
+}
+
+/* Order Summary Section */
+.order-summary {
+    background: white;
+    margin: 15px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(3, 75, 6, 0.1);
+    overflow: hidden;
+}
+
+.summary-header {
+    background: linear-gradient(135deg, #034b06, #06700b);
+    color: white;
+    padding: 12px 15px;
+    font-weight: 600;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.summary-content {
+    padding: 15px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.summary-row:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.summary-label {
+    color: #666;
+    font-size: 13px;
+}
+
+.summary-value {
+    color: #034b06;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.summary-total {
+    font-size: 16px;
+    font-weight: 700;
+    color: #034b06;
+}
+
+.summary-divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #034b06, transparent);
+    margin: 12px 0;
+}
+
+/* Action Buttons - SMALLER */
+.cart-actions {
+    position: fixed;
+    bottom: 60px;
+    left: 0;
+    right: 0;
+    background: white;
+    padding: 12px 15px;
+    display: flex;
+    gap: 8px;
+    box-shadow: 0 -2px 20px rgba(3, 75, 6, 0.1);
+    z-index: 999;
+}
+
+.action-btn {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.continue-shopping-action {
+    background: white;
+    color: #034b06;
+    border: 2px solid #034b06;
+}
+
+.continue-shopping-action:hover {
+    background: #f8fff6;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(3, 75, 6, 0.2);
+}
+
+.checkout-btn {
+    background: #034b06;
+    color: white;
+    border: 2px solid #034b06;
+    box-shadow: 0 2px 8px rgba(3, 75, 6, 0.3);
+}
+
+.checkout-btn:hover:not(:disabled) {
+    background: #06700b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(3, 75, 6, 0.4);
+}
+
+.checkout-btn:disabled {
+    background: #ccc;
+    border-color: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Loading States */
+.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.loading-pulse {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Notification */
+.notification {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    background: #4caf50;
+    color: white;
+    padding: 12px 16px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 10000;
+    display: none;
+    animation: slideIn 0.3s ease;
+    font-size: 14px;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+/* Promo Code Section - SMALLER */
+.promo-section {
+    background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+    padding: 12px 15px;
+    margin: 15px;
+    border-radius: 12px;
+    border: 1px dashed #034b06;
+}
+
+.promo-title {
+    font-weight: 600;
+    color: #034b06;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+}
+
+.promo-input-group {
+    display: flex;
+    gap: 8px;
+}
+
+.promo-input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #034b06;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+.apply-promo-btn {
+    background: #034b06;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.apply-promo-btn:hover {
+    background: #06700b;
+    transform: translateY(-1px);
+}
+
+/* Payment Modal */
+.payment-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.modal-header {
+    background: #034b06;
+    color: white;
+    padding: 15px;
+    border-radius: 12px 12px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-title {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.payment-option {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.payment-option:hover {
+    border-color: #034b06;
+    background: #f8fff6;
+}
+
+.payment-option.selected {
+    border-color: #034b06;
+    background: #e8f5e9;
+}
+
+.payment-icon {
+    font-size: 24px;
+    margin-right: 12px;
+}
+
+.payment-info {
+    flex: 1;
+}
+
+.payment-name {
+    font-weight: 600;
+    color: #034b06;
+    margin-bottom: 4px;
+}
+
+.payment-desc {
+    font-size: 12px;
+    color: #666;
+}
+
+.pay-now-btn {
+    width: 100%;
+    background: #034b06;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 15px;
+}
+
+.pay-now-btn:hover:not(:disabled) {
+    background: #06700b;
+    transform: translateY(-2px);
+}
+
+.pay-now-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+/* Responsive adjustments */
+@media (max-width: 360px) {
+    .cart-actions {
+        padding: 10px 12px;
+    }
+    
+    .action-btn {
+        padding: 10px;
+        font-size: 13px;
+    }
+    
+    .cart-item {
+        padding: 10px 12px;
+    }
+    
+    .cart-item-image {
+        width: 50px;
+        height: 50px;
+    }
+}
+</style>
+
+<!-- Notification Element -->
+<div id="notification" class="notification"></div>
+
+<!-- Payment Modal -->
+<div id="paymentModal" class="payment-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-title">💳 طريقة الدفع</div>
+            <button class="modal-close" onclick="closePaymentModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <div class="payment-option" onclick="selectPaymentMethod('thawani')">
+                <div class="payment-icon">🏦</div>
+                <div class="payment-info">
+                    <div class="payment-name">ثواني</div>
+                    <div class="payment-desc">امن , سريع , فعال</div>
+                </div>
+                <input type="radio" name="paymentMethod" value="thawani" style="display: none;">
+            </div>
+            <button class="pay-now-btn" id="payNowBtn" onclick="processPayment()" disabled>
+                ادفع الان - <span id="modalTotalAmount">0.000 ر.ع</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="cart-container">
+    <!-- Header -->
+    <div class="cart-header">
+        <button class="back-button" onclick="goBack()">←</button>
+        <div class="cart-title">🛒 سلتي</div>
+        <div style="width: 30px;"></div>
+    </div>
+
+    <!-- Empty Cart State -->
+    <div id="emptyCart" class="empty-cart" style="display: none;">
+        <div class="empty-cart-icon">🛒</div>
+        <div class="empty-cart-title">سلتك فارغة عبيها!</div>
+        <div class="empty-cart-message">ضيف منتجاتك وعيشش</div>
+        <button class="continue-shopping-btn" onclick="continueShopping()">
+            متابعة التسوق
+        </button>
+    </div>
+
+    <!-- Cart with Items -->
+    <div id="cartWithItems">
+        <!-- Cart Items -->
+        <div class="cart-items-section">
+            <div class="cart-section-header">
+                📦 منتحات السلة
+            </div>
+            <div id="cartItemsList">
+                <!-- Cart items will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Promo Code Section -->
+        <div class="promo-section">
+            <div class="promo-title">🎁 لديك كود خصم؟</div>
+            <div class="promo-input-group">
+                <input type="text" class="promo-input" placeholder="اكتب كود الخصم" id="promoCode">
+                <button class="apply-promo-btn" onclick="applyPromoCode()">تطبيق</button>
+            </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="order-summary">
+            <div class="summary-header">
+                💰 ملخص الطلب
+            </div>
+            <div class="summary-content">
+                <div class="summary-row">
+                    <span class="summary-label">منتجات</span>
+                    <span class="summary-value" id="subtotal">0.000 ر.ع</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">التوصيل</span>
+                    <span class="summary-value" id="deliveryFee">1.000 ر.ع</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">الخصم</span>
+                    <span class="summary-value" id="discount">0.000 ر.ع</span>
+                </div>
+                <div class="summary-divider"></div>
+                <div class="summary-row">
+                    <span class="summary-label summary-total">المجموع</span>
+                    <span class="summary-value summary-total" id="totalAmount">0.000 ر.ع</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="cart-actions">
+        <button class="action-btn continue-shopping-action" onclick="continueShopping()">
+            ← تابع التسوق
+        </button>
+        <button class="action-btn checkout-btn" id="checkoutBtn" disabled onclick="openPaymentModal()">
+            اتمام الطلب 🚀
+        </button>
+    </div>
+</div>
+
+<script>
+let cartItems = [];
+let subtotal = 0;
+let deliveryFee = 1.000;
+let discount = 0;
+let total = 0;
+let selectedPaymentMethod = null;
+
+// Thawani API Configuration
+const THAWANI_CONFIG = {
+    apiKey: 'l8ZAYKPImEMIIhThZXMhsmqCcrOqXz',
+    baseUrl: 'https://checkout.thawani.om/api/v1',
+    successUrl: window.location.origin + '/payment/success',
+    cancelUrl: window.location.origin + '/payment/cancel'
+};
+
+// دالة لعرض الإشعارات
+function showNotification(message, type = 'success') {
+    const notification = document.getElementById('notification');
+    notification.textContent = message;
+    notification.style.background = type === 'success' ? '#4caf50' : 
+                                  type === 'warning' ? '#ff9800' : '#f44336';
+    notification.style.display = 'block';
+    
+    setTimeout(() => {
+        notification.style.display = 'none';
+    }, 3000);
+}
+
+// جلب بيانات السلة من الخادم
+async function loadCart() {
+    try {
+        const response = await fetch('/cart');
+        const data = await response.json();
+        
+        if (data.success) {
+            cartItems = data.cart.items || [];
+            updateCartDisplay();
+        } else {
+            throw new Error('Failed to load cart');
+        }
+    } catch (error) {
+        console.error('Error loading cart:', error);
+        showNotification('❌ Failed to load cart', 'error');
+    }
+}
+
+// تحديث كمية المنتج
+async function updateQuantity(itemId, newQuantity) {
+    if (newQuantity < 1) return;
+    
+    try {
+        const response = await fetch('/cart/update', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                item_id: itemId,
+                quantity: newQuantity
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            await loadCart();
+        } else {
+            throw new Error(data.message);
+        }
+    } catch (error) {
+        console.error('Error updating quantity:', error);
+    }
+}
+
+// إزالة منتج من السلة
+async function removeItem(itemId) {
+    if (!confirm('Are you sure you want to remove this item from your cart?')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch('/cart/remove', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                item_id: itemId
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            await loadCart();
+            showNotification('✅ Item removed from cart');
+        } else {
+            throw new Error(data.message);
+        }
+    } catch (error) {
+        console.error('Error removing item:', error);
+        showNotification('❌ Failed to remove item', 'error');
+    }
+}
+
+// تطبيق كود الخصم
+function applyPromoCode() {
+    const promoCode = document.getElementById('promoCode').value.trim();
+    
+    if (!promoCode) {
+        showNotification('⚠️ Please enter a promo code', 'warning');
+        return;
+    }
+    
+    const validPromoCodes = {
+        'WELCOME10': 10,
+        'SAVE15': 15,
+        'FREESHIP': 100
+    };
+    
+    if (validPromoCodes[promoCode.toUpperCase()]) {
+        const discountPercent = validPromoCodes[promoCode.toUpperCase()];
+        
+        if (promoCode.toUpperCase() === 'FREESHIP') {
+            discount = deliveryFee;
+            showNotification('🎉 Free shipping applied!');
+        } else {
+            discount = (subtotal * discountPercent) / 100;
+            showNotification(`🎉 ${discountPercent}% discount applied!`);
+        }
+        
+        updateTotals();
+    } else {
+        showNotification('❌ Invalid promo code', 'error');
+    }
+}
+
+// تحديث الإجماليات
+function updateTotals() {
+    subtotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+    total = subtotal + deliveryFee - discount;
+    
+    document.getElementById('subtotal').textContent = `${subtotal.toFixed(3)} ر.ع`;
+    document.getElementById('deliveryFee').textContent = `${deliveryFee.toFixed(3)} ر.ع`;
+    document.getElementById('discount').textContent = `-${discount.toFixed(3)} ر.ع`;
+    document.getElementById('totalAmount').textContent = `${total.toFixed(3)} ر.ع`;
+    
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    checkoutBtn.disabled = cartItems.length === 0;
+}
+
+// تحديث عرض السلة
+function updateCartDisplay() {
+    const emptyCart = document.getElementById('emptyCart');
+    const cartWithItems = document.getElementById('cartWithItems');
+    const cartItemsList = document.getElementById('cartItemsList');
+    
+    if (cartItems.length === 0) {
+        emptyCart.style.display = 'block';
+        cartWithItems.style.display = 'none';
+        return;
+    }
+    
+    emptyCart.style.display = 'none';
+    cartWithItems.style.display = 'block';
+    
+    cartItemsList.innerHTML = cartItems.map(item => `
+        <div class="cart-item">
+            <img src="${item.image || 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=300&q=80'}" 
+                 alt="${item.product_name}" 
+                 class="cart-item-image">
+            <div class="cart-item-info">
+                <div class="cart-item-name">${item.product_name}</div>
+                <div class="cart-item-price">${item.price.toFixed(3)} ر.ع</div>
+                <div class="quantity-controls">
+                    <button class="quantity-btn" onclick="updateQuantity('${item.item_id}', ${item.quantity - 1})">-</button>
+                    <span class="quantity-display">${item.quantity}</span>
+                    <button class="quantity-btn" onclick="updateQuantity('${item.item_id}', ${item.quantity + 1})">+</button>
+                </div>
+            </div>
+            <button class="remove-btn" onclick="removeItem('${item.item_id}')">🗑️</button>
+        </div>
+    `).join('');
+    
+    updateTotals();
+}
+
+// فتح نموذج الدفع
+function openPaymentModal() {
+    if (cartItems.length === 0) {
+        showNotification('سلتك فاضية', 'warning');
+        return;
+    }
+    
+    document.getElementById('modalTotalAmount').textContent = `${total.toFixed(3)} ر.ع`;
+    document.getElementById('paymentModal').style.display = 'flex';
+}
+
+// إغلاق نموذج الدفع
+function closePaymentModal() {
+    document.getElementById('paymentModal').style.display = 'none';
+    selectedPaymentMethod = null;
+    updatePayNowButton();
+}
+
+// اختيار طريقة الدفع
+function selectPaymentMethod(method) {
+    selectedPaymentMethod = method;
+    
+    // تحديث التصميم البصري
+    document.querySelectorAll('.payment-option').forEach(option => {
+        option.classList.remove('selected');
+    });
+    event.currentTarget.classList.add('selected');
+    
+    updatePayNowButton();
+}
+
+// تحديث زر الدفع
+function updatePayNowButton() {
+    const payNowBtn = document.getElementById('payNowBtn');
+    payNowBtn.disabled = !selectedPaymentMethod;
+}
+
+// معالجة الدفع
+async function processPayment() {
+    if (!selectedPaymentMethod) {
+        showNotification('اختار طريقة الدفع', 'warning');
+        return;
+    }
+    
+    if (selectedPaymentMethod === 'thawani') {
+        await processThawaniPayment();
+    }
+}
+
+// معالجة الدفع عبر Thawani
+async function processThawaniPayment() {
+    try {
+        showNotification('🔄 ثواني من وقتك', 'warning');
+        
+        // تحويل المبلغ من ريال عماني إلى بيزة (1 ر.ع = 1000 بيزة)
+        const amountInBaisa = Math.round(total * 1000);
+        
+        const orderData = {
+            client_reference_id: 'order_' + Date.now(),
+            mode: "payment",
+            products: cartItems.map(item => ({
+                name: item.product_name,
+                quantity: item.quantity,
+                unit_amount: Math.round(item.price * 1000) // تحويل السعر إلى بيزة
+            })),
+            success_url: THAWANI_CONFIG.successUrl,
+            cancel_url: THAWANI_CONFIG.cancelUrl,
+            metadata: {
+                "Customer": "Customer",
+                "order_id": 'order_' + Date.now(),
+                "total_amount": total.toFixed(3)
+            }
+        };
+
+        const response = await fetch('/api/create-thawani-session', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(orderData)
+        });
+
+        const data = await response.json();
+
+        if (data.success && data.session_id) {
+            // توجيه المستخدم إلى صفحة الدفع Thawani
+            window.location.href = `https://checkout.thawani.om/pay/${data.session_id}?key=${THAWANI_CONFIG.apiKey}`;
+        } else {
+            throw new Error(data.message || 'Failed to create payment session');
+        }
+
+    } catch (error) {
+        console.error('Payment error:', error);
+        showNotification('❌ Payment failed: ' + error.message, 'error');
+    }
+}
+
+// المتابعة للشراء
+function continueShopping() {
+    window.history.back();
+}
+
+// الرجوع للخلف
+function goBack() {
+    window.history.back();
+}
+
+// التهيئة عند تحميل الصفحة
+document.addEventListener('DOMContentLoaded', function() {
+    loadCart();
+    
+    // إغلاق النموذج عند النقر خارج المحتوى
+    document.getElementById('paymentModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closePaymentModal();
+        }
+    });
+});
+</script>
+{% endblock %}

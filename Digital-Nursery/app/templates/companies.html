@@ -1,0 +1,290 @@
+{% extends 'base.html' %}
+{% block title %}Companies - Online Store{% endblock %}
+{% block content %}
+<style>
+.companies-container {
+    background: #f8f9fa;
+    min-height: 100vh;
+}
+
+.talabat-search-container {
+    background: white;
+    padding: 60px 15px 15px 15px;
+    margin: 0 -15px;
+    border-bottom: 1px solid #eee;
+    position: relative;
+}
+
+.talabat-search {
+    border-radius: 25px;
+    border: 2px solid #e0e0e0;
+    padding: 12px 20px;
+    font-size: 16px;
+    width: 100%;
+}
+
+.talabat-search:focus {
+    border-color: #d81b60;
+    box-shadow: none;
+}
+
+/* Back Button Circle - POSITIONED ABOVE SEARCH */
+.back-button-circle {
+    position: absolute;
+    left: 25px;
+    top: 15px;
+    width: 40px;
+    height: 40px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #e0e0e0;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.back-button-circle:hover {
+    background: #f8f9fa;
+    border-color: #d81b60;
+    transform: scale(1.05);
+}
+
+.back-arrow {
+    font-size: 18px;
+    color: #d81b60;
+    font-weight: bold;
+}
+
+/* Company Card like Talabat - SIMPLIFIED */
+.talabat-company-card {
+    background: white;
+    border-radius: 12px;
+    margin: 8px 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border: 1px solid #f0f0f0;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.talabat-company-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(216, 27, 96, 0.15);
+}
+
+.talabat-company-header {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+}
+
+.talabat-company-logo {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    object-fit: cover;
+    background: #f8f9fa;
+    margin-right: 15px;
+    border: 2px solid #f0f0f0;
+}
+
+.talabat-company-info {
+    flex: 1;
+}
+
+.talabat-company-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.talabat-company-meta {
+    color: #666;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.talabat-rating {
+    color: #ff6b00;
+    font-weight: 600;
+}
+
+.talabat-delivery-time {
+    color: #666;
+}
+
+.talabat-location {
+    color: #888;
+}
+
+/* Floating Action Button like mobile apps */
+.talabat-fab {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background: #d81b60;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    box-shadow: 0 4px 20px rgba(216, 27, 96, 0.4);
+    cursor: pointer;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.talabat-fab:hover {
+    transform: scale(1.1);
+}
+
+/* Loading animation */
+.talabat-loading {
+    display: none;
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
+
+@keyframes talabatSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.talabat-company-card {
+    animation: talabatSlideIn 0.3s ease;
+}
+
+/* Simple footer */
+.talabat-footer {
+    text-align: center;
+    padding: 20px;
+    color: #888;
+    font-size: 14px;
+}
+</style>
+
+<div class="companies-container">
+    <!-- Search Section with Back Button ABOVE -->
+    <div class="talabat-search-container">
+        <div class="container">
+            <!-- Back Button Circle - POSITIONED ABOVE SEARCH -->
+            <div class="back-button-circle" onclick="goToHomePage()">
+                <div class="back-arrow">←</div>
+            </div>
+            
+            <input 
+                id="companySearch" 
+                type="text" 
+                class="form-control talabat-search" 
+                placeholder="🔍 البحث"
+                oninput="filterCompanies()"
+            >
+        </div>
+    </div>
+
+    <!-- Companies List - SIMPLIFIED -->
+    <div id="companiesList">
+        {% for company in companies %}
+        <div class="talabat-company-card" data-name="{{ company.name|lower }}" onclick="viewCompanyDetails({{ loop.index0 }})">
+            <div class="talabat-company-header">
+                <img 
+                    src="{{ company.logo or 'https://img.icons8.com/color/96/000000/company.png' }}" 
+                    alt="{{ company.name }}" 
+                    class="talabat-company-logo"
+                >
+                <div class="talabat-company-info">
+                    <div class="talabat-company-name">{{ company.name }}</div>
+                    <div class="talabat-company-meta">
+                        <span class="talabat-rating">⭐ {{ company.rating|default('4.5') }}</span>
+                        <span class="talabat-delivery-time">🕐 {{ company.delivery_time|default('20-30 min') }}</span>
+                        <span class="talabat-location">📍 {{ company.location }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Loading Indicator -->
+    <div id="loadingIndicator" class="talabat-loading">
+        <div>تحميل شركات اكثر</div>
+    </div>
+
+    <!-- Simple Footer -->
+    <div class="talabat-footer">
+        {{ companies|length }} الشركات المتوفرة
+    </div>
+
+    <!-- Floating Action Button -->
+    <div class="talabat-fab" onclick="scrollToTop()">
+        ↑
+    </div>
+</div>
+
+<script>
+function goToHomePage() {
+    // Redirect to home page - changed to main.home
+    window.location.href = "{{ url_for('main.home') }}";
+}
+
+function filterCompanies() {
+    const search = document.getElementById('companySearch').value.toLowerCase();
+    const companies = document.querySelectorAll('.talabat-company-card');
+    
+    companies.forEach(company => {
+        const name = company.getAttribute('data-name');
+        const show = !search || name.includes(search);
+        company.style.display = show ? 'block' : 'none';
+    });
+}
+
+function viewCompanyDetails(companyId) {
+    // Navigate to company details
+    window.location.href = `{{ url_for('main.company_details', company_id=0) }}`.replace('0', companyId);
+}
+
+function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Simulate infinite scroll
+let isLoading = false;
+window.addEventListener('scroll', () => {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500 && !isLoading) {
+        isLoading = true;
+        document.getElementById('loadingIndicator').style.display = 'block';
+        
+        // Simulate API call delay
+        setTimeout(() => {
+            document.getElementById('loadingIndicator').style.display = 'none';
+            isLoading = false;
+        }, 1000);
+    }
+});
+
+// Add Enter key functionality to search
+document.getElementById('companySearch').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        filterCompanies();
+    }
+});
+</script>
+{% endblock %}

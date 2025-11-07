@@ -1,0 +1,41 @@
+@keyframes fadeInScale {
+    from { opacity: 0; transform: scale(0.92) translateY(30px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+#categoriesGrid.animate-in {
+    animation: fadeInScale 0.5s cubic-bezier(.4,2,.6,1);
+}
+@media (max-width: 576px) {
+    .btn-talabat.btn-animate {
+        padding-top: 0.3rem !important;
+        padding-bottom: 0.3rem !important;
+        font-size: 0.95rem !important;
+        min-height: 32px;
+    }
+}
+body {
+    background-color: linear-gradient(90deg,rgba(168, 255, 120, 1) 0%, rgba(87, 199, 133, 1) 100%);;
+
+}
+
+.card {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.btn-animate {
+    transition: transform 0.25s cubic-bezier(.4,2,.6,1), box-shadow 0.25s;
+    will-change: transform, box-shadow;
+}
+.btn-animate:hover, .btn-animate:focus {
+    transform: scale(1.08) translateY(-2px);
+    box-shadow: 0 6px 24px rgba(56,142,60,0.18);
+    z-index: 2;
+}
+@keyframes btnFadeInUp {
+    from { opacity: 0; transform: translateY(24px) scale(0.95); }
+    to { opacity: 1; transform: none; }
+}
+.btn-animate {
+    animation: btnFadeInUp 0.7s cubic-bezier(.4,2,.6,1);
+}

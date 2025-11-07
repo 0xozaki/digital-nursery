@@ -1,0 +1,111 @@
+[
+    {
+        "id": "1",
+        "Activation_code": "ABC123",
+        "name": "GreenLeaf Garden Center",
+        "location": "123 Plant Ave, Green City",
+        "details": "Your one-stop shop for plants, seeds, and gardening tools.",
+        "long_description": "GreenLeaf Garden Center offers a wide variety of indoor and outdoor plants, premium seeds, pots, and expert gardening advice. Visit us for all your plant needs!",
+        "banner": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
+        "logo": "https://img.icons8.com/color/96/000000/plant-under-sun.png",
+        "Promo_codes": [
+            
+        ],
+        "catagories": [
+            {
+                "id": "0",
+                "name": "ازهار",
+                "products": [
+                    {
+                        "name": "Sunflower Seeds",
+                        "image": "https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=300&q=80",
+                        "price": "3.0",
+                        "details": "High germination, perfect for gardens."
+                    },
+                    {
+                        "name": "Basil Seeds",
+                        "image": "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=300&q=80",
+                        "price": "2.99",
+                        "details": "Grow fresh basil at home."
+                    }
+                ]
+            },
+            {
+                "id": "1",
+                "name": "Pots",
+                "products": [
+                    {
+                        "name": "Ceramic Pot",
+                        "image": "https://images.unsplash.com/photo-1519864600265-abb23847ef2c?auto=format&fit=crop&w=300&q=80",
+                        "price": "1.2",
+                        "details": "Modern design, drainage hole included."
+                    }
+                ]
+            }
+        ],
+        "phone": "+1234567890",
+        "email": "info@greenleaf.com",
+        "website": "https://greenleaf.com",
+        "whatsapp": "1234567890",
+        "social": [
+            { "name": "Instagram", "url": "https://instagram.com/greenleaf" },
+            { "name": "Facebook", "url": "https://facebook.com/greenleaf" }
+        ],
+        "map_url": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.835434509374!2d144.953735315904!3d-37.8162797420217!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad65d43f1f1f1f1%3A0x5045675218ce6e0!2s123+Plant+Ave%2C+Green+City!5e0!3m2!1sen!2sus!4v1630000000000!5m2!1sen!2sus"
+    },
+    {
+        "id": "2",
+        "Activation_code": "ABC123",
+        "name": "GreenLeaf Garden Center2",
+        "location": "123 Plant Ave, Green City",
+        "details": "Your one-stop shop for plants, seeds, and gardening tools.",
+        "long_description": "GreenLeaf Garden Center offers a wide variety of indoor and outdoor plants, premium seeds, pots, and expert gardening advice. Visit us for all your plant needs!",
+        "banner": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
+        "logo": "https://img.icons8.com/color/96/000000/plant-under-sun.png",
+        "Promo_codes": [
+            { "code": "ozaki", "minus": "1" },
+            { "code": "GREEN10", "minus": "10" }
+        ],
+        "catagories": [
+            {
+                "id": "0",
+                "name": "Seeds",
+                "products": [
+                    {
+                        "name": "Sunflower Seeds",
+                        "image": "https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=300&q=80",
+                        "price": "3.49",
+                        "details": "High germination, perfect for gardens."
+                    },
+                    {
+                        "name": "Basil Seeds",
+                        "image": "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=300&q=80",
+                        "price": "2.99",
+                        "details": "Grow fresh basil at home."
+                    }
+                ]
+            },
+            {
+                "id": "1",
+                "name": "Pots",
+                "products": [
+                    {
+                        "name": "Ceramic2 Pot",
+                        "image": "https://images.unsplash.com/photo-1519864600265-abb23847ef2c?auto=format&fit=crop&w=300&q=80",
+                        "price": "12.99",
+                        "details": "Modern design, drainage hole included."
+                    }
+                ]
+            }
+        ],
+        "phone": "+1234567890",
+        "email": "info@greenleaf.com",
+        "website": "https://greenleaf.com",
+        "whatsapp": "1234567890",
+        "social": [
+            { "name": "Instagram", "url": "https://instagram.com/greenleaf" },
+            { "name": "Facebook", "url": "https://facebook.com/greenleaf" }
+        ],
+        "map_url": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.835434509374!2d144.953735315904!3d-37.8162797420217!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad65d43f1f1f1f1%3A0x5045675218ce6e0!2s123+Plant+Ave%2C+Green+City!5e0!3m2!1sen!2sus!4v1630000000000!5m2!1sen!2sus"
+    }
+]
